@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מבחן Linux בסיסי</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .quiz-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border-right: 4px solid #007bff;
+        }
+        .question h3 {
+            color: #333;
+            margin-top: 0;
+        }
+        .options {
+            margin-top: 15px;
+        }
+        .option {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: white;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .option:hover {
+            background-color: #e9ecef;
+            border-color: #007bff;
+        }
+        .option.selected {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+        .option.correct {
+            background-color: #28a745;
+            color: white;
+            border-color: #28a745;
+        }
+        .option.incorrect {
+            background-color: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+        .feedback {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .feedback.correct {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .feedback.incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .score {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        .reset-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .reset-btn:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <div class="score" id="score">ניקוד: 0/20</div>
+    <button class="reset-btn" onclick="resetQuiz()">התחל מחדש</button>
+<div class="quiz-container">
+    <h1>מבחן Linux בסיסי</h1>
+
+    <div class="question">
+        <h3>שאלה 1: איזו פקודה משמשת להצגת התיקייה הנוכחית?</h3>
+        <div class="options">
+            <div class="option" onclick="selectAnswer(1, 'a', false)">a) ls</div>
+            <div class="option" onclick="selectAnswer(1, 'b', true)">b) pwd</div>
+            <div class="option" onclick="selectAnswer(1, 'c', false)">c) cd</div>
+            <div class="option" onclick="selectAnswer(1, 'd', false)">d) dir</div>
+        </div>
+        <div class="feedback" id="feedback1"></div>
+    </div>
+
+    <div class="question">
+        <h3>שאלה 2: כיצד ניתן לעבור לתיקיית הבית של המשתמש?</h3>
+        <div class="options">
+            <div class="option" onclick="selectAnswer(2, 'a', false)">a) cd /home</div>
+            <div class="option" onclick="selectAnswer(2, 'b', true)">b) cd ~</div>
+            <div class="option" onclick="selectAnswer(2, 'c', false)">c) cd ..</div>
+            <div class="option" onclick="selectAnswer(2, 'd', false)">d) cd root</div>
+        </div>
+        <div class="feedback" id="feedback2"></div>
+    </div>
+
+    <div class="question">
+        <h3>שאלה 3: איזו פקודה מציגה את תוכן התיקייה הנוכחית?</h3>
+        <div class="options">
+            <div class="option" onclick="selectAnswer(3, 'a', false)">a) pwd</div>
+            <div class="option" onclick="selectAnswer(3, 'b', false)">b) cat</div>
+            <div class="option" onclick="selectAnswer(3, 'c', true)">c) ls</div>
+            <div class="option" onclick="selectAnswer(3, 'd', false)">d) show</div>
+        </div>
+        <div class="feedback" id="feedback3"></div>
+    </div>
+
+    <div class="question">
+        <h3>שאלה 4: מה משמעות הסימן . בשם קובץ או תיקייה?</h3>
+        <div class="options">
+            <div class="option" onclick="selectAnswer(4, 'a', false)">a) קובץ מערכת</div>
+            <div class="option" onclick="selectAnswer(4, 'b', true)">b) קובץ נסתר</div>
+            <div class="option" onclick="selectAnswer(4, 'c', false)">c) קובץ זמני</div>
+            <div class="option" onclick="selectAnswer(4, 'd', false)">d) קובץ לא חוקי</div>
+        </div>
+        <div class="feedback" id="feedback4"></div>
+    </div>
+
+    <div class="question">
+        <h3>שאלה 5: איזו פקודה משמשת ליצירת תיקייה חדשה?</h3>
+        <div class="options">
+            <div class="option" onclick="selectAnswer(5, 'a', false)">a) create</div>
+            <div class="option" onclick="selectAnswer(5, 'b', true)">b) mkdir</div>
+            <div class="option" onclick="selectAnswer(5, 'c', false)">c) newdir</div>
+            <div class="option" onclick="selectAnswer(5, 'd', false)">d) makedir</div>
+        </div>
+        <div class="feedback" id="feedback5"></div>
+    </div>
+
+    <div class="question">
+        <h3>שאלה 6: כיצד ניתן למחוק קובץ?</h3>
+        <div class="options">
+            <div class="option" onclick="selectAnswer(6, 'a', false)">a) delete filename</div>
+            <div class="option" onclick="selectAnswer(6, 'b', true)">b) rm filename</div>
+            <div class="option" onclick="selectAnswer(6, 'c', false)">c) remove filename</div>
+            <div class="option" onclick="selectAnswer(6, 'd', false)">d) del filename</div>
+        </div>
+        <div class="feedback" id="feedback6"></div>
+    </div>
+
+    <div class="question">
+        <h3>שאלה 7: מה משמעות הפקודה ls -la?</h3>
+        <div class="options">
+            <div class="option" onclick="selectAnswer(7, 'a', false)">a) הצגה של קבצים נסתרים בלבד</div>
+            <div class="option" onclick="selectAnswer(7, 'b', true)">b) הצגה מפורטת של כל הקבצים כולל נסתרים</div>
+            <div class="option" onclick="selectAnswer(7, 'c', false)">c) הצגה של קבצים גדולים בלבד</div>
+            <div class="option" onclick="selectAnswer(7, 'd', false)">d) הצגה של קבצים בסדר אלפביתי</div>
+        </div>
+        <div class="feedback" id="feedback7"></div>
+    </div>
+
+    <div class="question">
+        <h3>שאלה 8: איזו פקודה מעתיקה קבצים?</h3>
+        <div class="options">
+            <div class="option" onclick="selectAnswer(8, 'a', false)">a) copy</div>
+            <div class="option" onclick="selectAnswer(8, 'b', true)">b) cp</div>
+            <div class="option" onclick="selectAnswer(8, 'c', false)">c) move</div>
+            <div class="option" onclick="selectAnswer(8, 'd', false)">d) cpy</div>
+        </div>
+        <div class="feedback" id="feedback8"></div>
+    </div>
+
+    <div class="question">
+        <h3>שאלה 9: מה משמעות הרשאה 755 על קובץ?</h3>
+        <div class="options">
+            <div class="option" onclick="selectAnswer(9, 'a', true)">a) בעלים: קריאה+כתיבה+הרצה, קבוצה: קריאה+הרצה, אחרים: קריאה+הרצה</div>
+            <div class="option" onclick="selectAnswer(9, 'b', false)">b) כולם: קריאה+כתיבה+הרצה</div>
+            <div class="option" onclick="selectAnswer(9, 'c', false)">c) בעלים בלבד: קריאה+כתיבה+הרצה</div>
+            <div class="option" onclick="selectAnswer(9, 'd', false)">d) בעלים: קריאה+כתיבה, אחרים: קריאה בלבד</div>
+        </div>
+        <div class="feedback" id="feedback9"></div>
+    </div>
+
+    <div class="question">
+        <h3>שאלה 10: איזו פקודה מציגה את תוכן קובץ טקסט?</h3>
+        <div class="options">
+            <div class="option" onclick="selectAnswer(10, 'a', false)">a) show</div>
+            <div class="option" onclick="selectAnswer(10, 'b', true)">b) cat</div>
+            <div class="option" onclick="selectAnswer(10, 'c', false)">c) view</div>
+            <div class="option" onclick="selectAnswer(10, 'd', false)">d) open</div>
+        </div>
+        <div class="feedback" id="feedback10"></div>
+    </div>
+
+    <div class="question">
+        <h3>שאלה 11: כיצד ניתן לראות את המשתמש הפעיל כעת?</h3>
+        <div class="options">
+            <div class="option" onclick="selectAnswer(11, 'a', false)">a) user</div>
+            <div class="option" onclick="selectAnswer(11, 'b', false)">b) who</div>
+            <div class="option" onclick="selectAnswer(11, 'c', true)">c) whoami</div>
+            <div class="option" onclick="selectAnswer(11, 'd', false)">d) me</div>
+        </div>
+        <div class="feedback" id="feedback11"></div>
+    </div>
+
+    <div class="question">
+        <h3>שאלה 12: איזו פקודה מציגה את רשימת התהליכים הפעילים?</h3>
+        <div class="options">
+            <div class="option" onclick="selectAnswer(12, 'a', false)">a) process</div>
+            <div class="option" onclick="selectAnswer(12, 'b', true)">b) ps</div>
+            <div class="option" onclick="selectAnswer(12, 'c', false)">c) tasks</div>
+            <div class="option" onclick="selectAnswer(12, 'd', false)">d) running</div>
+        </div>
+        <div class="feedback" id="feedback12"></div>
+    </div>
+
+    <div class="question">
+        <h3>שאלה 13: מה משמעות הפקודה chmod 644 file.txt?</h3>
+        <div class="options">
+            <div class="option" onclick="selectAnswer(13, 'a', false)">a) שינוי בעלות הקובץ</div>
+            <div class="option" onclick="selectAnswer(13, 'b', true)">b) שינוי הרשאות הקובץ</div>
+            <div class="option" onclick="selectAnswer(13, 'c', false)">c) מחיקת הקובץ</div>
+            <div class="option" onclick="selectAnswer(13, 'd', false)">d) יצירת עותק של הקובץ</div>
+        </div>
+        <div class="feedback" id="feedback13"></div>
+    </div>
+
+    <div class="question">
+        <h3>שאלה 14: איזו פקודה מציגה את השימוש בדיסק?</h3>
+        <div class="options">
+            <div class="option" onclick="selectAnswer(14, 'a', false)">a) disk</div>
+            <div class="option" onclick="selectAnswer(14, 'b', false)">b) space</div>
+            <div class="option" onclick="selectAnswer(14, 'c', true)">c) df</div>
+            <div class="option" onclick="selectAnswer(14, 'd', false)">d) mem</div>
+        </div>
+        <div class="feedback" id="feedback14"></div>
+    </div>
+
+    <div class="question">
+        <h3>שאלה 15: כיצד ניתן לצפות בקבצים גדולים עמוד אחרי עמוד?</h3>
+        <div class="options">
+            <div class="option" onclick="selectAnswer(15, 'a', false)">a) cat filename</div>
+            <div class="option" onclick="selectAnswer(15, 'b', true)">b) less filename</div>
+            <div class="option" onclick="selectAnswer(15, 'c', false)">c) show filename</div>
+            <div class="option" onclick="selectAnswer(15, 'd', false)">d) page filename</div>
+        </div>
+        <div class="feedback" id="feedback15"></div>
+    </div>
+
+    <div class="question">
+        <h3>שאלה 16: איזו פקודה מחפשת קבצים במערכת?</h3>
+        <div class="options">
+            <div class="option" onclick="selectAnswer(16, 'a', false)">a) search</div>
+            <div class="option" onclick="selectAnswer(16, 'b', false)">b) find</div>
+            <div class="option" onclick="selectAnswer(16, 'c', false)">c) locate</div>
+            <div class="option" onclick="selectAnswer(16, 'd', true)">d) כל התשובות נכונות</div>
+        </div>
+        <div class="feedback" id="feedback16"></div>
+    </div>
+
+    <div class="question">
+        <h3>שאלה 17: מה משמעות הסימן * בפקודות Linux?</h3>
+        <div class="options">
+            <div class="option" onclick="selectAnswer(17, 'a', false)">a) כפל</div>
+            <div class="option" onclick="selectAnswer(17, 'b', true)">b) תו כללי (wildcard)</div>
+            <div class="option" onclick="selectAnswer(17, 'c', false)">c) הערה</div>
+            <div class="option" onclick="selectAnswer(17, 'd', false)">d) חיבור</div>
+        </div>
+        <div class="feedback" id="feedback17"></div>
+    </div>
+
+    <div class="question">
+        <h3>שאלה 18: איזו פקודה מציגה את ההיסטוריה של הפקודות שהוקלדו?</h3>
+        <div class="options">
+            <div class="option" onclick="selectAnswer(18, 'a', false)">a) hist</div>
+            <div class="option" onclick="selectAnswer(18, 'b', true)">b) history</div>
+            <div class="option" onclick="selectAnswer(18, 'c', false)">c) log</div>
+            <div class="option" onclick="selectAnswer(18, 'd', false)">d) commands</div>
+        </div>
+        <div class="feedback" id="feedback18"></div>
+    </div>
+
+    <div class="question">
+        <h3>שאלה 19: כיצד ניתן לעצור תהליך הרץ בטרמינל?</h3>
+        <div class="options">
+            <div class="option" onclick="selectAnswer(19, 'a', true)">a) Ctrl+C</div>
+            <div class="option" onclick="selectAnswer(19, 'b', false)">b) Ctrl+Z</div>
+            <div class="option" onclick="selectAnswer(19, 'c', false)">c) Ctrl+X</div>
+            <div class="option" onclick="selectAnswer(19, 'd', false)">d) Ctrl+D</div>
+        </div>
+        <div class="feedback" id="feedback19"></div>
+    </div>
+
+    <div class="question">
+        <h3>שאלה 20: איזו פקודה מציגה את תאריך ושעה של המערכת?</h3>
+        <div class="options">
+            <div class="option" onclick="selectAnswer(20, 'a', false)">a) time</div>
+            <div class="option" onclick="selectAnswer(20, 'b', true)">b) date</div>
+            <div class="option" onclick="selectAnswer(20, 'c', false)">c) clock</div>
+            <div class="option" onclick="selectAnswer(20, 'd', false)">d) now</div>
+        </div>
+        <div class="feedback" id="feedback20"></div>
+    </div>
+</div>
+
+<script>
+    let score = 0;
+    let answered = {};
+
+    function selectAnswer(questionNum, selectedOption, isCorrect) {
+        // אם השאלה כבר נענתה, אל תאפשר לענות שוב
+        if (answered[questionNum]) {
+            return;
+        }
+
+        const options = document.querySelectorAll(`.question:nth-child(${questionNum + 1}) .option`);
+        const feedback = document.getElementById(`feedback${questionNum}`);
+
+        // סמן את התשובה שנבחרה
+        options.forEach(option => {
+            option.classList.remove('selected');
+        });
+
+        // מצא את האופציה שנבחרה
+        let selectedElement = null;
+        options.forEach(option => {
+            if (option.textContent.includes(selectedOption + ')')) {
+                selectedElement = option;
+                option.classList.add('selected');
+            }
+        });
+
+        // הצג את התוצאה
+        setTimeout(() => {
+            if (isCorrect) {
+                selectedElement.classList.add('correct');
+                feedback.textContent = '✓ תשובה נכונה!';
+                feedback.className = 'feedback correct';
+                score++;
+            } else {
+                selectedElement.classList.add('incorrect');
+                // הדגש את התשובה הנכונה
+                options.forEach(option => {
+                    const optionOnClick = option.getAttribute('onclick');
+                    if (optionOnClick && optionOnClick.includes('true')) {
+                        option.classList.add('correct');
+                    }
+                });
+                feedback.textContent = '✗ תשובה שגויה. התשובה הנכונה מודגשת בירוק.';
+                feedback.className = 'feedback incorrect';
+            }
+
+            // עדכן את הניקוד
+            updateScore();
+            answered[questionNum] = true;
+        }, 300);
+    }
+
+    function updateScore() {
+        document.getElementById('score').textContent = `ניקוד: ${score}/20`;
+    }
+
+    function resetQuiz() {
+        score = 0;
+        answered = {};
+        updateScore();
+
+        // נקה את כל התשובות והמשוב
+        document.querySelectorAll('.option').forEach(option => {
+            option.classList.remove('selected', 'correct', 'incorrect');
+        });
+
+        document.querySelectorAll('.feedback').forEach(feedback => {
+            feedback.textContent = '';
+            feedback.className = 'feedback';
+        });
+    }
+</script>
+</body>
+</html>
